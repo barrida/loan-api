@@ -1,4 +1,5 @@
 # Run Application
+
 In root director,run
 
 ```shell
@@ -7,18 +8,19 @@ In root director,run
 
 # OpenAPI Swagger endpoint definition
 
-Browse to Swagger to analyse endpoints http://localhost:8080/swagger-ui/index.html#/
+Browse to Swagger to analyze endpoints http://localhost:8080/swagger-ui/index.html#/
 
 # Run Authorization Server
-build*Assumptions:**
+
+**Assumptions:**
 - ADMIN can operate for all customers. Only admins can create and list customers. CUSTOMER can operate for themselves.
 - The .requestMatchers("/v1/**").hasAnyAuthority("ADMIN", "CUSTOMER") ensures that both scopes (ADMIN and CUSTOMER) can access any endpoint under "/v1/**".
 - For example: The @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('CUSTOMER') and #loanRequest.customerId == principal.id)") ensures that ADMIN can create loans for any customer. CUSTOMER can only create loans for themselves.
 
-You must run auth server to access endpoints. I slightly modified my own Auth server [sample](https://github.com/barrida/authorization-server). If you want to run Dockerized version, update the roles as ADMIN and CUSTOMER, then follow the steps in auth server repository. OOtherwise, follow instructions below:
+You'll need to run auth server to access endpoints. I slightly modified my own Auth server [sample](https://github.com/barrida/authorization-server). If you want to run Dockerized version, update the roles as ADMIN and CUSTOMER, then follow the steps in auth server repository. OOtherwise, follow instructions below:
 
 ## Step 1: Run auth-server locally
-In root director, run
+In root directory, run
 
 ```shell
 ./gradlew bootRun 
