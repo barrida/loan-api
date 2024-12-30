@@ -1,0 +1,16 @@
+services:
+  authorization-server:
+    platform: linux/amd64
+    build: .
+    container_name: authorization-server
+    ports:
+      - "${PORT:-9090}:${PORT:-9090}" # Default to 9090 if not provided
+    networks:
+      - shared-network
+    environment:
+      - JWK_URI=http://authorization-server:${PORT}/oauth2/jwks
+      - SERVER_PORT=${PORT:-9090} # Default to 9090 if not provided
+
+networks:
+  shared-network:
+    driver: bridge

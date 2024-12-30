@@ -1,0 +1,9 @@
+server:
+  port: ${PORT:9090}  # Default to 9090 if not provided
+
+app:
+  base-url: http://localhost:${server.port}
+
+logging:
+  level:
+    org.springframework.security: trace
