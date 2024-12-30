@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-01-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 2,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-02-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 3,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-03-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 4,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-04-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 5,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-05-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 6,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-06-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 7,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-07-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 8,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-08-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 9,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-09-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 10,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-10-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 11,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-11-01",
+    "paymentDate": null,
+    "isPaid": false
+  },
+  {
+    "id": 12,
+    "amount": 916.67,
+    "paidAmount": 0.00,
+    "dueDate": "2024-12-01",
+    "paymentDate": null,
+    "isPaid": false
+  }
+]
