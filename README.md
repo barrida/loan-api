@@ -18,7 +18,7 @@ build*Assumptions:**
 You must run auth server to access endpoints. I slightly modified my own Auth server [sample](https://github.com/barrida/authorization-server). If you want to run Dockerized version, update the roles as ADMIN and CUSTOMER, then follow the steps in auth server repository. OOtherwise, follow instructions below:
 
 ## Step 1: Run auth-server locally
-In root director, run
+Open terminal in /authorization-server directory and run  
 
 ```shell
 ./gradlew bootRun 
