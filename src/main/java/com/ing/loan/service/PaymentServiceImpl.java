@@ -4,6 +4,7 @@ import com.ing.loan.entity.Customer;
 import com.ing.loan.entity.Loan;
 import com.ing.loan.entity.LoanInstallment;
 import com.ing.loan.exception.ErrorCode;
+import com.ing.loan.exception.LoanInstallmentNotFoundException;
 import com.ing.loan.exception.LoanNotFoundException;
 import com.ing.loan.repository.CustomerRepository;
 import com.ing.loan.repository.LoanInstallmentRepository;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.ing.loan.exception.ErrorCode.LOAN_INSTALLMENT_NOT_FOUND;
 
 /**
  * @author Suleyman Yildirim
@@ -93,7 +96,7 @@ public class PaymentServiceImpl implements PaymentService{
                     .totalAmountSpent(totalPaid)
                     .build();
         } else {
-            throw new IllegalStateException("No valid installments found for loan.");
+            throw new LoanInstallmentNotFoundException(LOAN_INSTALLMENT_NOT_FOUND, "No valid installments found for loan " + loanId);
         }
     }
 

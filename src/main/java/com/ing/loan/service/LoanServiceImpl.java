@@ -65,6 +65,11 @@ public class LoanServiceImpl implements LoanService {
         var installmentAmount = loanAmount.divide(BigDecimal.valueOf(loanRequest.getInstallments()), RoundingMode.HALF_UP);
         List<LoanInstallment> installments = getLoanInstallments(loanRequest, installmentAmount);
 
+        // Set the loan in each installment
+        for (LoanInstallment installment : installments) {
+            installment.setLoan(loan);
+        }
+
         // Set the installments in the loan
         loan.setInstallments(installments);
 
