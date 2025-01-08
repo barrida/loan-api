@@ -1,5 +1,6 @@
 package com.ing.loan.controller;
 
+import com.ing.loan.exception.LoanInstallmentNotFoundException;
 import com.ing.loan.exception.LoanNotFoundException;
 import com.ing.loan.request.PaymentRequest;
 import com.ing.loan.response.LoanPaymentResponse;
@@ -55,12 +56,14 @@ public class PaymentController {
         try {
             LoanPaymentResponse loanResponse = paymentService.payLoan(paymentRequest.getLoanId(), paymentRequest.getPaymentAmount());
             return ResponseEntity.ok(loanResponse);
-        } catch (LoanNotFoundException e) {
+        } catch (LoanNotFoundException | LoanInstallmentNotFoundException e) {
             // Handle specific exception with an appropriate status code (e.g., 404 Not Found)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            LoanPaymentResponse response = LoanPaymentResponse.builder().errorMessage(e.getMessage()).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
             // Handle unexpected errors
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            LoanPaymentResponse response = LoanPaymentResponse.builder().errorMessage(e.getMessage()).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 }

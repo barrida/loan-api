@@ -1,5 +1,6 @@
 package com.ing.loan.service;
 
+import com.ing.loan.entity.Customer;
 import com.ing.loan.entity.Loan;
 import com.ing.loan.entity.LoanInstallment;
 import com.ing.loan.exception.*;
@@ -42,41 +43,11 @@ public class LoanServiceImpl implements LoanService {
     @Override
     @Transactional
     public LoanResponse createLoan(LoanRequest loanRequest) {
-
-        // Find the customer
-        var customer = customerRepository.findById(loanRequest.getCustomerId())
-                .orElseThrow(() -> new CustomerNotFoundException(ErrorCode.CUSTOMER_NOT_FOUND,  "Customer with ID %s not found.".formatted(loanRequest.getCustomerId())));
-
-        // Check if customer has enough credit limit
-        BigDecimal loanAmount = loanRequest.getLoanAmount().multiply(BigDecimal.ONE.add(loanRequest.getInterestRate()));
-        if (customer.getCreditLimit().subtract(customer.getUsedCreditLimit()).compareTo(loanAmount) < 0) {
-            throw new InsufficientCreditLimitException(ErrorCode.INSUFFICIENT_CREDIT, "Customer does not have enough credit limit for this loan");
-        }
-
-        // Create a new loan entity
-        var loan = Loan.builder()
-                .customer(customer)
-                .loanAmount(loanAmount)
-                .numberOfInstallment(loanRequest.getInstallments()) // Direct enum mapping
-                .createDate(LocalDate.now())
-                .isPaid(false)
-                .build();
-
-        var installmentAmount = loanAmount.divide(BigDecimal.valueOf(loanRequest.getInstallments()), RoundingMode.HALF_UP);
-        List<LoanInstallment> installments = getLoanInstallments(loanRequest, installmentAmount);
-
-        // Set the loan in each installment
-        for (LoanInstallment installment : installments) {
-            installment.setLoan(loan);
-        }
-
-        // Set the installments in the loan
-        loan.setInstallments(installments);
-
-        // Save the loan along with its installments
+        var customer = getCustomerById(loanRequest.getCustomerId());
+        validateCreditLimit(customer, loanRequest);
+        var loan = buildLoanEntity(customer, loanRequest);
+        attachInstallments(loan, loanRequest);
         var savedLoan = loanRepository.save(loan);
-
-        // Build and return the response
         return buildLoanResponse(savedLoan);
     }
 
@@ -133,4 +104,38 @@ public class LoanServiceImpl implements LoanService {
                 .build();
     }
 
+    private Customer getCustomerById(Long customerId) {
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(ErrorCode.CUSTOMER_NOT_FOUND,
+                        "Customer with ID %s not found.".formatted(customerId)));
+    }
+
+    private void validateCreditLimit(Customer customer, LoanRequest loanRequest) {
+        BigDecimal loanAmount = calculateLoanAmount(loanRequest);
+        if (customer.getCreditLimit().subtract(customer.getUsedCreditLimit()).compareTo(loanAmount) < 0) {
+            throw new InsufficientCreditLimitException(ErrorCode.INSUFFICIENT_CREDIT,
+                    "Customer does not have enough credit limit for this loan");
+        }
+    }
+
+    private BigDecimal calculateLoanAmount(LoanRequest loanRequest) {
+        return loanRequest.getLoanAmount().multiply(BigDecimal.ONE.add(loanRequest.getInterestRate()));
+    }
+
+        private Loan buildLoanEntity(Customer customer, LoanRequest loanRequest) {
+        return Loan.builder()
+                .customer(customer)
+                .loanAmount(calculateLoanAmount(loanRequest))
+                .numberOfInstallment(loanRequest.getInstallments())
+                .createDate(LocalDate.now())
+                .isPaid(false)
+                .build();
+    }
+
+    private void attachInstallments(Loan loan, LoanRequest loanRequest) {
+        BigDecimal installmentAmount = loan.getLoanAmount().divide(BigDecimal.valueOf(loanRequest.getInstallments()), RoundingMode.HALF_UP);
+        List<LoanInstallment> installments = getLoanInstallments(loanRequest, installmentAmount);
+        installments.forEach(installment -> installment.setLoan(loan));
+        loan.setInstallments(installments);
+    }
 }

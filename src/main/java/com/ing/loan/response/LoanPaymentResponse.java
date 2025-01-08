@@ -25,4 +25,7 @@ public class LoanPaymentResponse {
 
     @Schema(description = "Indicates whether the loan has been fully paid off", example = "false")
     private boolean isLoanPaid;
+
+    @Schema(description = "Error message, if any, associated with the payment attempt", example = "No valid installments found for loan 1")
+    private String errorMessage;
 }

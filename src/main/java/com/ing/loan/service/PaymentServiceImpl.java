@@ -52,6 +52,7 @@ public class PaymentServiceImpl implements PaymentService{
 
         List<LoanInstallment> filteredInstallments = filterInstallments(loanId);
 
+
         if (!filteredInstallments.isEmpty()) {
 
             // Calculate number of installments that can be paid
