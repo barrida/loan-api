@@ -20,7 +20,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     public Customer createCustomer(Customer customer) {
 
         var optionalCustomer =  customerRepository.findById(customer.getId());

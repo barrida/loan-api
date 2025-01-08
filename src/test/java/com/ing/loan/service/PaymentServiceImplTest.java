@@ -4,6 +4,7 @@ import com.ing.loan.entity.Customer;
 import com.ing.loan.entity.Loan;
 import com.ing.loan.entity.LoanInstallment;
 import com.ing.loan.exception.ErrorCode;
+import com.ing.loan.exception.LoanInstallmentNotFoundException;
 import com.ing.loan.exception.LoanNotFoundException;
 import com.ing.loan.repository.CustomerRepository;
 import com.ing.loan.repository.LoanInstallmentRepository;
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -129,4 +131,34 @@ class PaymentServiceImplTest {
         // Verify no interactions with other repositories
         verifyNoInteractions(customerRepository, loanInstallmentRepository);
     }
+
+    @Test
+    void payLoan_failPaymentBeyondThreeMonths() {
+        // Adjust installment3 due date beyond 3 months
+        installment1.setDueDate(LocalDate.now().plusMonths(3).with(TemporalAdjusters.lastDayOfMonth()).plusDays(1));
+        installment2.setDueDate(LocalDate.now().plusMonths(4));
+        installment3.setDueDate(LocalDate.now().plusMonths(4));
+
+        // Mock repository behavior
+        when(loanRepository.findById(1L)).thenReturn(Optional.of(loan));
+        when(loanInstallmentRepository.findByLoanId(1L)).thenReturn(Optional.of(Arrays.asList(installment1, installment2, installment3)));
+
+        // Call the method under test
+        LoanInstallmentNotFoundException exception = assertThrows(
+                LoanInstallmentNotFoundException.class,
+                () -> paymentService.payLoan(1L, BigDecimal.valueOf(400))
+        );
+
+        // Assert exception message
+        assertEquals("No valid installments found for loan 1", exception.getMessage());
+
+        // Verify no updates to repositories
+        verifyNoInteractions(customerRepository);
+        verify(loanInstallmentRepository, times(0)).saveAll(anyList());
+        verify(loanRepository, times(0)).save(any(Loan.class));
+    }
+
+
+
+
 }

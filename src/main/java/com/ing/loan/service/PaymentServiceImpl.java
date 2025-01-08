@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -117,9 +118,7 @@ public class PaymentServiceImpl implements PaymentService{
         // Determine the maximum due date (3 months from now)
         LocalDate maxDueDate = LocalDate.now()
                 .plusMonths(3)
-                .withDayOfMonth(1)
-                .plusMonths(1)
-                .minusDays(1);
+                .with(TemporalAdjusters.lastDayOfMonth());
 
         // Filter installments: unpaid and due within the next 3 months, sorted by due date
         return loanInstallmentRepository.findByLoanId(loanId).stream()
